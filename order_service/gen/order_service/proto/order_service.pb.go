@@ -131,8 +131,8 @@ type CreateOrderRequest struct {
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	MarketId      string                 `protobuf:"bytes,2,opt,name=market_id,json=marketId,proto3" json:"market_id,omitempty"`
 	OrderType     OrderType              `protobuf:"varint,3,opt,name=order_type,json=orderType,proto3,enum=order_service_proto.OrderType" json:"order_type,omitempty"`
-	Price         float64                `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
-	Quantity      float64                `protobuf:"fixed64,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Price         string                 `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
+	Quantity      int64                  `protobuf:"varint,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -188,14 +188,14 @@ func (x *CreateOrderRequest) GetOrderType() OrderType {
 	return OrderType_ORDER_TYPE_UNSPECIFIED
 }
 
-func (x *CreateOrderRequest) GetPrice() float64 {
+func (x *CreateOrderRequest) GetPrice() string {
 	if x != nil {
 		return x.Price
 	}
-	return 0
+	return ""
 }
 
-func (x *CreateOrderRequest) GetQuantity() float64 {
+func (x *CreateOrderRequest) GetQuantity() int64 {
 	if x != nil {
 		return x.Quantity
 	}
@@ -472,8 +472,8 @@ const file_order_service_proto_order_service_proto_rawDesc = "" +
 	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\x12=\n" +
 	"\n" +
 	"order_type\x18\x03 \x01(\x0e2\x1e.order_service_proto.OrderTypeR\torderType\x12\x14\n" +
-	"\x05price\x18\x04 \x01(\x01R\x05price\x12\x1a\n" +
-	"\bquantity\x18\x05 \x01(\x01R\bquantity\"j\n" +
+	"\x05price\x18\x04 \x01(\tR\x05price\x12\x1a\n" +
+	"\bquantity\x18\x05 \x01(\x03R\bquantity\"j\n" +
 	"\x13CreateOrderResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\tR\aorderId\x128\n" +
 	"\x06status\x18\x02 \x01(\x0e2 .order_service_proto.OrderStatusR\x06status\"K\n" +
@@ -501,10 +501,11 @@ const file_order_service_proto_order_service_proto_rawDesc = "" +
 	"\aPENDING\x10\x02\x12\n" +
 	"\n" +
 	"\x06FILLED\x10\x03\x12\f\n" +
-	"\bREJECTED\x10\x042\xc5\x02\n" +
-	"\fOrderService\x12`\n" +
+	"\bREJECTED\x10\x042\xdf\x01\n" +
+	"\x10OrderSyncService\x12`\n" +
 	"\vCreateOrder\x12'.order_service_proto.CreateOrderRequest\x1a(.order_service_proto.CreateOrderResponse\x12i\n" +
-	"\x0eGetOrderStatus\x12*.order_service_proto.GetOrderStatusRequest\x1a+.order_service_proto.GetOrderStatusResponse\x12h\n" +
+	"\x0eGetOrderStatus\x12*.order_service_proto.GetOrderStatusRequest\x1a+.order_service_proto.GetOrderStatusResponse2~\n" +
+	"\x12OrderStreamService\x12h\n" +
 	"\x12StreamOrderUpdates\x12..order_service_proto.StreamOrderUpdatesRequest\x1a .order_service_proto.OrderUpdate0\x01BHZFgithub.com/FlyKarlik/proto/proto/order_service/gen;order_service_protob\x06proto3"
 
 var (
@@ -538,12 +539,12 @@ var file_order_service_proto_order_service_proto_depIdxs = []int32{
 	1, // 2: order_service_proto.GetOrderStatusResponse.status:type_name -> order_service_proto.OrderStatus
 	1, // 3: order_service_proto.OrderUpdate.status:type_name -> order_service_proto.OrderStatus
 	8, // 4: order_service_proto.OrderUpdate.updated_at:type_name -> google.protobuf.Timestamp
-	2, // 5: order_service_proto.OrderService.CreateOrder:input_type -> order_service_proto.CreateOrderRequest
-	4, // 6: order_service_proto.OrderService.GetOrderStatus:input_type -> order_service_proto.GetOrderStatusRequest
-	7, // 7: order_service_proto.OrderService.StreamOrderUpdates:input_type -> order_service_proto.StreamOrderUpdatesRequest
-	3, // 8: order_service_proto.OrderService.CreateOrder:output_type -> order_service_proto.CreateOrderResponse
-	5, // 9: order_service_proto.OrderService.GetOrderStatus:output_type -> order_service_proto.GetOrderStatusResponse
-	6, // 10: order_service_proto.OrderService.StreamOrderUpdates:output_type -> order_service_proto.OrderUpdate
+	2, // 5: order_service_proto.OrderSyncService.CreateOrder:input_type -> order_service_proto.CreateOrderRequest
+	4, // 6: order_service_proto.OrderSyncService.GetOrderStatus:input_type -> order_service_proto.GetOrderStatusRequest
+	7, // 7: order_service_proto.OrderStreamService.StreamOrderUpdates:input_type -> order_service_proto.StreamOrderUpdatesRequest
+	3, // 8: order_service_proto.OrderSyncService.CreateOrder:output_type -> order_service_proto.CreateOrderResponse
+	5, // 9: order_service_proto.OrderSyncService.GetOrderStatus:output_type -> order_service_proto.GetOrderStatusResponse
+	6, // 10: order_service_proto.OrderStreamService.StreamOrderUpdates:output_type -> order_service_proto.OrderUpdate
 	8, // [8:11] is the sub-list for method output_type
 	5, // [5:8] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
@@ -564,7 +565,7 @@ func file_order_service_proto_order_service_proto_init() {
 			NumEnums:      2,
 			NumMessages:   6,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_order_service_proto_order_service_proto_goTypes,
 		DependencyIndexes: file_order_service_proto_order_service_proto_depIdxs,
