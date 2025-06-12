@@ -20,12 +20,20 @@ enum OrderStatus {
   REJECTED = 4;
 }
 
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_TRADER = 1;
+  USER_ROLE_ADMIN = 2;
+  USER_ROLE_VIEWER = 3;
+}
+
 message CreateOrderRequest {
   string user_id = 1;
   string market_id = 2;
   OrderType order_type = 3;
   string price = 4;
   int64 quantity = 5;
+  repeated UserRole user_roles = 6;
 }
 
 message CreateOrderResponse {

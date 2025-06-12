@@ -126,6 +126,58 @@ func (OrderStatus) EnumDescriptor() ([]byte, []int) {
 	return file_order_service_proto_order_service_proto_rawDescGZIP(), []int{1}
 }
 
+type UserRole int32
+
+const (
+	UserRole_USER_ROLE_UNSPECIFIED UserRole = 0
+	UserRole_USER_ROLE_TRADER      UserRole = 1
+	UserRole_USER_ROLE_ADMIN       UserRole = 2
+	UserRole_USER_ROLE_VIEWER      UserRole = 3
+)
+
+// Enum value maps for UserRole.
+var (
+	UserRole_name = map[int32]string{
+		0: "USER_ROLE_UNSPECIFIED",
+		1: "USER_ROLE_TRADER",
+		2: "USER_ROLE_ADMIN",
+		3: "USER_ROLE_VIEWER",
+	}
+	UserRole_value = map[string]int32{
+		"USER_ROLE_UNSPECIFIED": 0,
+		"USER_ROLE_TRADER":      1,
+		"USER_ROLE_ADMIN":       2,
+		"USER_ROLE_VIEWER":      3,
+	}
+)
+
+func (x UserRole) Enum() *UserRole {
+	p := new(UserRole)
+	*p = x
+	return p
+}
+
+func (x UserRole) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (UserRole) Descriptor() protoreflect.EnumDescriptor {
+	return file_order_service_proto_order_service_proto_enumTypes[2].Descriptor()
+}
+
+func (UserRole) Type() protoreflect.EnumType {
+	return &file_order_service_proto_order_service_proto_enumTypes[2]
+}
+
+func (x UserRole) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use UserRole.Descriptor instead.
+func (UserRole) EnumDescriptor() ([]byte, []int) {
+	return file_order_service_proto_order_service_proto_rawDescGZIP(), []int{2}
+}
+
 type CreateOrderRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -133,6 +185,7 @@ type CreateOrderRequest struct {
 	OrderType     OrderType              `protobuf:"varint,3,opt,name=order_type,json=orderType,proto3,enum=order_service_proto.OrderType" json:"order_type,omitempty"`
 	Price         string                 `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
 	Quantity      int64                  `protobuf:"varint,5,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	UserRoles     []UserRole             `protobuf:"varint,6,rep,packed,name=user_roles,json=userRoles,proto3,enum=order_service_proto.UserRole" json:"user_roles,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -200,6 +253,13 @@ func (x *CreateOrderRequest) GetQuantity() int64 {
 		return x.Quantity
 	}
 	return 0
+}
+
+func (x *CreateOrderRequest) GetUserRoles() []UserRole {
+	if x != nil {
+		return x.UserRoles
+	}
+	return nil
 }
 
 type CreateOrderResponse struct {
@@ -466,14 +526,16 @@ var File_order_service_proto_order_service_proto protoreflect.FileDescriptor
 
 const file_order_service_proto_order_service_proto_rawDesc = "" +
 	"\n" +
-	"'order_service/proto/order_service.proto\x12\x13order_service_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xbb\x01\n" +
+	"'order_service/proto/order_service.proto\x12\x13order_service_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf9\x01\n" +
 	"\x12CreateOrderRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tmarket_id\x18\x02 \x01(\tR\bmarketId\x12=\n" +
 	"\n" +
 	"order_type\x18\x03 \x01(\x0e2\x1e.order_service_proto.OrderTypeR\torderType\x12\x14\n" +
 	"\x05price\x18\x04 \x01(\tR\x05price\x12\x1a\n" +
-	"\bquantity\x18\x05 \x01(\x03R\bquantity\"j\n" +
+	"\bquantity\x18\x05 \x01(\x03R\bquantity\x12<\n" +
+	"\n" +
+	"user_roles\x18\x06 \x03(\x0e2\x1d.order_service_proto.UserRoleR\tuserRoles\"j\n" +
 	"\x13CreateOrderResponse\x12\x19\n" +
 	"\border_id\x18\x01 \x01(\tR\aorderId\x128\n" +
 	"\x06status\x18\x02 \x01(\x0e2 .order_service_proto.OrderStatusR\x06status\"K\n" +
@@ -501,7 +563,12 @@ const file_order_service_proto_order_service_proto_rawDesc = "" +
 	"\aPENDING\x10\x02\x12\n" +
 	"\n" +
 	"\x06FILLED\x10\x03\x12\f\n" +
-	"\bREJECTED\x10\x042\xdf\x01\n" +
+	"\bREJECTED\x10\x04*f\n" +
+	"\bUserRole\x12\x19\n" +
+	"\x15USER_ROLE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10USER_ROLE_TRADER\x10\x01\x12\x13\n" +
+	"\x0fUSER_ROLE_ADMIN\x10\x02\x12\x14\n" +
+	"\x10USER_ROLE_VIEWER\x10\x032\xdf\x01\n" +
 	"\x10OrderSyncService\x12`\n" +
 	"\vCreateOrder\x12'.order_service_proto.CreateOrderRequest\x1a(.order_service_proto.CreateOrderResponse\x12i\n" +
 	"\x0eGetOrderStatus\x12*.order_service_proto.GetOrderStatusRequest\x1a+.order_service_proto.GetOrderStatusResponse2~\n" +
@@ -520,36 +587,38 @@ func file_order_service_proto_order_service_proto_rawDescGZIP() []byte {
 	return file_order_service_proto_order_service_proto_rawDescData
 }
 
-var file_order_service_proto_order_service_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_order_service_proto_order_service_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_order_service_proto_order_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_order_service_proto_order_service_proto_goTypes = []any{
 	(OrderType)(0),                    // 0: order_service_proto.OrderType
 	(OrderStatus)(0),                  // 1: order_service_proto.OrderStatus
-	(*CreateOrderRequest)(nil),        // 2: order_service_proto.CreateOrderRequest
-	(*CreateOrderResponse)(nil),       // 3: order_service_proto.CreateOrderResponse
-	(*GetOrderStatusRequest)(nil),     // 4: order_service_proto.GetOrderStatusRequest
-	(*GetOrderStatusResponse)(nil),    // 5: order_service_proto.GetOrderStatusResponse
-	(*OrderUpdate)(nil),               // 6: order_service_proto.OrderUpdate
-	(*StreamOrderUpdatesRequest)(nil), // 7: order_service_proto.StreamOrderUpdatesRequest
-	(*timestamppb.Timestamp)(nil),     // 8: google.protobuf.Timestamp
+	(UserRole)(0),                     // 2: order_service_proto.UserRole
+	(*CreateOrderRequest)(nil),        // 3: order_service_proto.CreateOrderRequest
+	(*CreateOrderResponse)(nil),       // 4: order_service_proto.CreateOrderResponse
+	(*GetOrderStatusRequest)(nil),     // 5: order_service_proto.GetOrderStatusRequest
+	(*GetOrderStatusResponse)(nil),    // 6: order_service_proto.GetOrderStatusResponse
+	(*OrderUpdate)(nil),               // 7: order_service_proto.OrderUpdate
+	(*StreamOrderUpdatesRequest)(nil), // 8: order_service_proto.StreamOrderUpdatesRequest
+	(*timestamppb.Timestamp)(nil),     // 9: google.protobuf.Timestamp
 }
 var file_order_service_proto_order_service_proto_depIdxs = []int32{
 	0, // 0: order_service_proto.CreateOrderRequest.order_type:type_name -> order_service_proto.OrderType
-	1, // 1: order_service_proto.CreateOrderResponse.status:type_name -> order_service_proto.OrderStatus
-	1, // 2: order_service_proto.GetOrderStatusResponse.status:type_name -> order_service_proto.OrderStatus
-	1, // 3: order_service_proto.OrderUpdate.status:type_name -> order_service_proto.OrderStatus
-	8, // 4: order_service_proto.OrderUpdate.updated_at:type_name -> google.protobuf.Timestamp
-	2, // 5: order_service_proto.OrderSyncService.CreateOrder:input_type -> order_service_proto.CreateOrderRequest
-	4, // 6: order_service_proto.OrderSyncService.GetOrderStatus:input_type -> order_service_proto.GetOrderStatusRequest
-	7, // 7: order_service_proto.OrderStreamService.StreamOrderUpdates:input_type -> order_service_proto.StreamOrderUpdatesRequest
-	3, // 8: order_service_proto.OrderSyncService.CreateOrder:output_type -> order_service_proto.CreateOrderResponse
-	5, // 9: order_service_proto.OrderSyncService.GetOrderStatus:output_type -> order_service_proto.GetOrderStatusResponse
-	6, // 10: order_service_proto.OrderStreamService.StreamOrderUpdates:output_type -> order_service_proto.OrderUpdate
-	8, // [8:11] is the sub-list for method output_type
-	5, // [5:8] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	2, // 1: order_service_proto.CreateOrderRequest.user_roles:type_name -> order_service_proto.UserRole
+	1, // 2: order_service_proto.CreateOrderResponse.status:type_name -> order_service_proto.OrderStatus
+	1, // 3: order_service_proto.GetOrderStatusResponse.status:type_name -> order_service_proto.OrderStatus
+	1, // 4: order_service_proto.OrderUpdate.status:type_name -> order_service_proto.OrderStatus
+	9, // 5: order_service_proto.OrderUpdate.updated_at:type_name -> google.protobuf.Timestamp
+	3, // 6: order_service_proto.OrderSyncService.CreateOrder:input_type -> order_service_proto.CreateOrderRequest
+	5, // 7: order_service_proto.OrderSyncService.GetOrderStatus:input_type -> order_service_proto.GetOrderStatusRequest
+	8, // 8: order_service_proto.OrderStreamService.StreamOrderUpdates:input_type -> order_service_proto.StreamOrderUpdatesRequest
+	4, // 9: order_service_proto.OrderSyncService.CreateOrder:output_type -> order_service_proto.CreateOrderResponse
+	6, // 10: order_service_proto.OrderSyncService.GetOrderStatus:output_type -> order_service_proto.GetOrderStatusResponse
+	7, // 11: order_service_proto.OrderStreamService.StreamOrderUpdates:output_type -> order_service_proto.OrderUpdate
+	9, // [9:12] is the sub-list for method output_type
+	6, // [6:9] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_order_service_proto_order_service_proto_init() }
@@ -562,7 +631,7 @@ func file_order_service_proto_order_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_order_service_proto_order_service_proto_rawDesc), len(file_order_service_proto_order_service_proto_rawDesc)),
-			NumEnums:      2,
+			NumEnums:      3,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   2,
