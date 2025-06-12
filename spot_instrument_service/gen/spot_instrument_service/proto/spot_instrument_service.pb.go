@@ -22,12 +22,65 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type UserRole int32
+
+const (
+	UserRole_USER_ROLE_UNSPECIFIED UserRole = 0
+	UserRole_USER_ROLE_TRADER      UserRole = 1
+	UserRole_USER_ROLE_ADMIN       UserRole = 2
+	UserRole_USER_ROLE_VIEWER      UserRole = 3
+)
+
+// Enum value maps for UserRole.
+var (
+	UserRole_name = map[int32]string{
+		0: "USER_ROLE_UNSPECIFIED",
+		1: "USER_ROLE_TRADER",
+		2: "USER_ROLE_ADMIN",
+		3: "USER_ROLE_VIEWER",
+	}
+	UserRole_value = map[string]int32{
+		"USER_ROLE_UNSPECIFIED": 0,
+		"USER_ROLE_TRADER":      1,
+		"USER_ROLE_ADMIN":       2,
+		"USER_ROLE_VIEWER":      3,
+	}
+)
+
+func (x UserRole) Enum() *UserRole {
+	p := new(UserRole)
+	*p = x
+	return p
+}
+
+func (x UserRole) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (UserRole) Descriptor() protoreflect.EnumDescriptor {
+	return file_spot_instrument_service_proto_spot_instrument_service_proto_enumTypes[0].Descriptor()
+}
+
+func (UserRole) Type() protoreflect.EnumType {
+	return &file_spot_instrument_service_proto_spot_instrument_service_proto_enumTypes[0]
+}
+
+func (x UserRole) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use UserRole.Descriptor instead.
+func (UserRole) EnumDescriptor() ([]byte, []int) {
+	return file_spot_instrument_service_proto_spot_instrument_service_proto_rawDescGZIP(), []int{0}
+}
+
 type Market struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Enabled       bool                   `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=deleted_at,json=deletedAt,proto3,oneof" json:"deleted_at,omitempty"`
+	AllowedRoles  []UserRole             `protobuf:"varint,5,rep,packed,name=allowed_roles,json=allowedRoles,proto3,enum=spot_instrument_service_proto.UserRole" json:"allowed_roles,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -90,9 +143,16 @@ func (x *Market) GetDeletedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+func (x *Market) GetAllowedRoles() []UserRole {
+	if x != nil {
+		return x.AllowedRoles
+	}
+	return nil
+}
+
 type ViewMarketsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserRoles     []string               `protobuf:"bytes,1,rep,name=user_roles,json=userRoles,proto3" json:"user_roles,omitempty"`
+	UserRoles     []UserRole             `protobuf:"varint,1,rep,packed,name=user_roles,json=userRoles,proto3,enum=spot_instrument_service_proto.UserRole" json:"user_roles,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -127,7 +187,7 @@ func (*ViewMarketsRequest) Descriptor() ([]byte, []int) {
 	return file_spot_instrument_service_proto_spot_instrument_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ViewMarketsRequest) GetUserRoles() []string {
+func (x *ViewMarketsRequest) GetUserRoles() []UserRole {
 	if x != nil {
 		return x.UserRoles
 	}
@@ -182,19 +242,25 @@ var File_spot_instrument_service_proto_spot_instrument_service_proto protoreflec
 
 const file_spot_instrument_service_proto_spot_instrument_service_proto_rawDesc = "" +
 	"\n" +
-	";spot_instrument_service/proto/spot_instrument_service.proto\x12\x1dspot_instrument_service_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x95\x01\n" +
+	";spot_instrument_service/proto/spot_instrument_service.proto\x12\x1dspot_instrument_service_proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe3\x01\n" +
 	"\x06Market\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x18\n" +
 	"\aenabled\x18\x03 \x01(\bR\aenabled\x12>\n" +
 	"\n" +
-	"deleted_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\tdeletedAt\x88\x01\x01B\r\n" +
-	"\v_deleted_at\"3\n" +
-	"\x12ViewMarketsRequest\x12\x1d\n" +
+	"deleted_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\tdeletedAt\x88\x01\x01\x12L\n" +
+	"\rallowed_roles\x18\x05 \x03(\x0e2'.spot_instrument_service_proto.UserRoleR\fallowedRolesB\r\n" +
+	"\v_deleted_at\"\\\n" +
+	"\x12ViewMarketsRequest\x12F\n" +
 	"\n" +
-	"user_roles\x18\x01 \x03(\tR\tuserRoles\"V\n" +
+	"user_roles\x18\x01 \x03(\x0e2'.spot_instrument_service_proto.UserRoleR\tuserRoles\"V\n" +
 	"\x13ViewMarketsResponse\x12?\n" +
-	"\amarkets\x18\x01 \x03(\v2%.spot_instrument_service_proto.MarketR\amarkets2\x8d\x01\n" +
+	"\amarkets\x18\x01 \x03(\v2%.spot_instrument_service_proto.MarketR\amarkets*f\n" +
+	"\bUserRole\x12\x19\n" +
+	"\x15USER_ROLE_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10USER_ROLE_TRADER\x10\x01\x12\x13\n" +
+	"\x0fUSER_ROLE_ADMIN\x10\x02\x12\x14\n" +
+	"\x10USER_ROLE_VIEWER\x10\x032\x8d\x01\n" +
 	"\x15SpotInstrumentService\x12t\n" +
 	"\vViewMarkets\x121.spot_instrument_service_proto.ViewMarketsRequest\x1a2.spot_instrument_service_proto.ViewMarketsResponseB\\ZZgithub.com/FlyKarlik/proto/proto/spot_instrument_service/gen;spot_instrument_service_protob\x06proto3"
 
@@ -210,23 +276,27 @@ func file_spot_instrument_service_proto_spot_instrument_service_proto_rawDescGZI
 	return file_spot_instrument_service_proto_spot_instrument_service_proto_rawDescData
 }
 
+var file_spot_instrument_service_proto_spot_instrument_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_spot_instrument_service_proto_spot_instrument_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_spot_instrument_service_proto_spot_instrument_service_proto_goTypes = []any{
-	(*Market)(nil),                // 0: spot_instrument_service_proto.Market
-	(*ViewMarketsRequest)(nil),    // 1: spot_instrument_service_proto.ViewMarketsRequest
-	(*ViewMarketsResponse)(nil),   // 2: spot_instrument_service_proto.ViewMarketsResponse
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(UserRole)(0),                 // 0: spot_instrument_service_proto.UserRole
+	(*Market)(nil),                // 1: spot_instrument_service_proto.Market
+	(*ViewMarketsRequest)(nil),    // 2: spot_instrument_service_proto.ViewMarketsRequest
+	(*ViewMarketsResponse)(nil),   // 3: spot_instrument_service_proto.ViewMarketsResponse
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_spot_instrument_service_proto_spot_instrument_service_proto_depIdxs = []int32{
-	3, // 0: spot_instrument_service_proto.Market.deleted_at:type_name -> google.protobuf.Timestamp
-	0, // 1: spot_instrument_service_proto.ViewMarketsResponse.markets:type_name -> spot_instrument_service_proto.Market
-	1, // 2: spot_instrument_service_proto.SpotInstrumentService.ViewMarkets:input_type -> spot_instrument_service_proto.ViewMarketsRequest
-	2, // 3: spot_instrument_service_proto.SpotInstrumentService.ViewMarkets:output_type -> spot_instrument_service_proto.ViewMarketsResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: spot_instrument_service_proto.Market.deleted_at:type_name -> google.protobuf.Timestamp
+	0, // 1: spot_instrument_service_proto.Market.allowed_roles:type_name -> spot_instrument_service_proto.UserRole
+	0, // 2: spot_instrument_service_proto.ViewMarketsRequest.user_roles:type_name -> spot_instrument_service_proto.UserRole
+	1, // 3: spot_instrument_service_proto.ViewMarketsResponse.markets:type_name -> spot_instrument_service_proto.Market
+	2, // 4: spot_instrument_service_proto.SpotInstrumentService.ViewMarkets:input_type -> spot_instrument_service_proto.ViewMarketsRequest
+	3, // 5: spot_instrument_service_proto.SpotInstrumentService.ViewMarkets:output_type -> spot_instrument_service_proto.ViewMarketsResponse
+	5, // [5:6] is the sub-list for method output_type
+	4, // [4:5] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_spot_instrument_service_proto_spot_instrument_service_proto_init() }
@@ -240,13 +310,14 @@ func file_spot_instrument_service_proto_spot_instrument_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_spot_instrument_service_proto_spot_instrument_service_proto_rawDesc), len(file_spot_instrument_service_proto_spot_instrument_service_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_spot_instrument_service_proto_spot_instrument_service_proto_goTypes,
 		DependencyIndexes: file_spot_instrument_service_proto_spot_instrument_service_proto_depIdxs,
+		EnumInfos:         file_spot_instrument_service_proto_spot_instrument_service_proto_enumTypes,
 		MessageInfos:      file_spot_instrument_service_proto_spot_instrument_service_proto_msgTypes,
 	}.Build()
 	File_spot_instrument_service_proto_spot_instrument_service_proto = out.File
